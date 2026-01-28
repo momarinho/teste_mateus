@@ -63,6 +63,45 @@ O arquivo `manifest.json` registra:
 
 ## Próximas partes (1.2 e 1.3)
 
-- As etapas 1.2 e 1.3 ainda não foram implementadas.
-- Quando chegarmos nelas, este README será atualizado com instruções completas
+## Parte 1.2 - Processamento de Arquivos
+
+### Requisitos adicionais
+
+- Python 3.9+
+- `openpyxl` para leitura de XLSX:
+
+```bash
+pip install openpyxl
+```
+
+### Como executar (1.2)
+
+```bash
+python process_ans_files.py
+```
+
+O script:
+- Lê os ZIPs baixados na etapa 1.1 (ou usa `manifest.json` se existir)
+- Extrai automaticamente os ZIPs
+- Processa somente arquivos que contenham **Despesas com Eventos/Sinistros**
+- Normaliza a estrutura em CSVs padronizados em `data/processed/normalized/`
+- Gera `data/processed/process_manifest.json`
+- Mantém `reg_ans` quando disponível para rastreabilidade entre etapas
+
+### Trade-off técnico (processamento incremental)
+
+Optei por **processamento incremental** (streaming), lendo linha a linha nos CSV/TXT
+e iterando linhas no XLSX com `openpyxl` em modo `read_only`. Essa abordagem:
+- Reduz uso de memória para arquivos grandes
+- Evita carregar datasets inteiros em RAM
+- Permite continuar mesmo com arquivos extensos
+
+O trade-off é um código um pouco mais complexo que a abordagem
+`pandas.read_csv()`/`read_excel()` completa em memória, mas é mais seguro para
+volumes variáveis.
+
+## Próximas partes (1.3)
+
+- A etapa 1.3 ainda não foi implementada.
+- Quando chegarmos nela, este README será atualizado com instruções completas
   de execução e documentação das decisões técnicas.
