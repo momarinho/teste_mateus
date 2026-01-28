@@ -102,6 +102,29 @@ volumes variáveis.
 
 ## Próximas partes (1.3)
 
-- A etapa 1.3 ainda não foi implementada.
-- Quando chegarmos nela, este README será atualizado com instruções completas
-  de execução e documentação das decisões técnicas.
+## Parte 1.3 - Consolidação e Análise
+
+### Como executar (1.3)
+
+```bash
+python consolidate_ans_expenses.py
+```
+
+Saídas:
+- CSV consolidado: `data/processed/consolidado_despesas.csv`
+- ZIP: `data/processed/consolidado_despesas.zip`
+- CSV de inconsistências: `data/processed/consolidado_inconsistencias.csv`
+
+### Tratamento de inconsistências
+
+Durante a consolidação, o script gera um CSV separado com inconsistências:
+- `cnpj_com_razoes_diferentes`: mesmo CNPJ com mais de uma razão social
+- `valor_nao_positivo`: valores zerados ou negativos
+- `trimestre_corrigido_competencia`: trimestre/ano corrigidos via `competencia_raw`
+- `ano_invalido` / `trimestre_invalido`: campos inválidos no input
+- `cnpj_ausente` / `razao_social_ausente`: campos ausentes
+- `valor_invalido`: valor não numérico
+
+Decisão: **não descarto registros automaticamente**; sinalizo no CSV de
+inconsistências para auditoria, mantendo transparência e permitindo decisões
+futuras (ex.: excluir ou ajustar somente na etapa de análise).
