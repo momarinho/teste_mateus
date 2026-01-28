@@ -368,10 +368,23 @@ def main() -> int:
         return 1
 
     extract_dirs = []
+    error_entries = []
     for zip_path in zip_files:
         if not os.path.exists(zip_path):
+            error_entries.append(
+                {
+                    "stage": "extract",
+                    "file": zip_path,
+                    "error": "arquivo_nao_encontrado",
+                }
+            )
             continue
-        extract_dirs.append(extract_zip(zip_path, args.extract_dir, args.overwrite))
+        try:
+            extract_dirs.append(extract_zip(zip_path, args.extract_dir, args.overwrite))
+        except Exception as exc:
+            error_entries.append(
+                {"stage": "extract", "file": zip_path, "error": str(exc)}
+            )
 
     if not extract_dirs:
         print("Nenhum ZIP valido para extrair.")
@@ -382,6 +395,14 @@ def main() -> int:
         entry = process_file(file_path, args.output_dir)
         manifest_entries.append(entry)
         status = entry.get("status")
+        if status == "error":
+            error_entries.append(
+                {
+                    "stage": "process",
+                    "file": file_path,
+                    "error": entry.get("error", "erro_desconhecido"),
+                }
+            )
         print(f"{status}: {file_path}")
 
     os.makedirs(args.output_dir, exist_ok=True)
@@ -393,6 +414,18 @@ def main() -> int:
                 "input_dir": args.input_dir,
                 "extract_dir": args.extract_dir,
                 "output_dir": args.output_dir,
+                "summary": {
+                    "processed": sum(
+                        1 for e in manifest_entries if e.get("status") == "processed"
+                    ),
+                    "skipped": sum(
+                        1 for e in manifest_entries if e.get("status") == "skipped"
+                    ),
+                    "error": sum(
+                        1 for e in manifest_entries if e.get("status") == "error"
+                    ),
+                },
+                "errors": error_entries,
                 "entries": manifest_entries,
             },
             f,

@@ -1,5 +1,6 @@
 import argparse
 import csv
+import json
 import os
 import re
 import zipfile
@@ -193,10 +194,14 @@ def main() -> int:
     issues_csv = os.path.join(args.output_dir, "consolidado_inconsistencias.csv")
     write_issues(issue_rows, issues_csv)
     zip_output(output_csv, os.path.join(args.output_dir, args.zip_name))
+    issues_summary_path = os.path.join(args.output_dir, "inconsistencias_resumo.json")
+    with open(issues_summary_path, "w", encoding="utf-8") as f:
+        json.dump(issue_counts, f, ensure_ascii=False, indent=2)
 
     print("CSV consolidado em:", output_csv)
     print("CSV de inconsistencias em:", issues_csv)
     print("ZIP gerado em:", os.path.join(args.output_dir, args.zip_name))
+    print("Resumo de inconsistencias em:", issues_summary_path)
     print("Inconsistencias encontradas:")
     for key, value in sorted(issue_counts.items()):
         print(f"- {key}: {value}")

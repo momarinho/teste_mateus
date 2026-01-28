@@ -5,9 +5,9 @@ import re
 import sys
 import time
 from html.parser import HTMLParser
+from urllib.error import HTTPError, URLError
 from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
-
 
 DEFAULT_BASE_URL = "https://dadosabertos.ans.gov.br/FTP/PDA/demonstracoes_contabeis/"
 DEFAULT_EXTENSIONS = [
@@ -147,21 +147,29 @@ def normalize_local_path(base_url, file_url, output_dir):
     return os.path.join(output_dir, *rel_path.split("/"))
 
 
-def download_file(url, dest, timeout, overwrite):
+def download_file(url, dest, timeout, overwrite, retries, backoff_seconds):
     os.makedirs(os.path.dirname(dest), exist_ok=True)
     if os.path.exists(dest) and not overwrite:
-        return "skipped", 0
-    req = Request(url, headers={"User-Agent": "ans-downloader/1.0"})
-    with urlopen(req, timeout=timeout) as resp:
-        total = 0
-        with open(dest, "wb") as f:
-            while True:
-                chunk = resp.read(1024 * 64)
-                if not chunk:
-                    break
-                f.write(chunk)
-                total += len(chunk)
-    return "downloaded", total
+        return "skipped", 0, 0, None
+    attempts = 0
+    while True:
+        attempts += 1
+        try:
+            req = Request(url, headers={"User-Agent": "ans-downloader/1.0"})
+            with urlopen(req, timeout=timeout) as resp:
+                total = 0
+                with open(dest, "wb") as f:
+                    while True:
+                        chunk = resp.read(1024 * 64)
+                        if not chunk:
+                            break
+                        f.write(chunk)
+                        total += len(chunk)
+            return "downloaded", total, attempts, None
+        except (HTTPError, URLError, TimeoutError) as exc:
+            if attempts >= retries:
+                return "error", 0, attempts, str(exc)
+            time.sleep(backoff_seconds * attempts)
 
 
 def quarter_label(year, quarter):
@@ -173,13 +181,17 @@ def main():
         description="Baixa as Demonstrações Contábeis mais recentes da ANS."
     )
     parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
-    parser.add_argument("--output-dir", default=os.path.join("data", "demonstracoes_contabeis"))
+    parser.add_argument(
+        "--output-dir", default=os.path.join("data", "demonstracoes_contabeis")
+    )
     parser.add_argument("--quarters", type=int, default=3)
     parser.add_argument("--timeout", type=int, default=30)
     parser.add_argument("--max-depth", type=int, default=2)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--manifest", default="manifest.json")
+    parser.add_argument("--retries", type=int, default=3)
+    parser.add_argument("--backoff", type=float, default=1.0)
     parser.add_argument(
         "--extensions",
         default=",".join(DEFAULT_EXTENSIONS),
@@ -187,7 +199,9 @@ def main():
     )
     args = parser.parse_args()
 
-    extensions = [ext.strip().lower() for ext in args.extensions.split(",") if ext.strip()]
+    extensions = [
+        ext.strip().lower() for ext in args.extensions.split(",") if ext.strip()
+    ]
     if not extensions:
         extensions = None
 
@@ -198,8 +212,12 @@ def main():
 
     latest_quarters = sorted(quarter_map.keys(), reverse=True)[: args.quarters]
     manifest_entries = []
+    summary = {"downloaded": 0, "skipped": 0, "error": 0, "dry-run": 0}
 
-    print("Trimestres selecionados:", ", ".join(quarter_label(y, q) for y, q in latest_quarters))
+    print(
+        "Trimestres selecionados:",
+        ", ".join(quarter_label(y, q) for y, q in latest_quarters),
+    )
 
     for year, quarter in latest_quarters:
         entries = quarter_map.get((year, quarter), [])
@@ -228,10 +246,16 @@ def main():
             status = "dry-run"
             size = 0
             error = None
+            attempts = 0
             try:
                 if not args.dry_run:
-                    status, size = download_file(
-                        file_url, dest, args.timeout, args.overwrite
+                    status, size, attempts, error = download_file(
+                        file_url,
+                        dest,
+                        args.timeout,
+                        args.overwrite,
+                        args.retries,
+                        args.backoff,
                     )
             except Exception as exc:
                 status = "error"
@@ -244,8 +268,10 @@ def main():
                     "status": status,
                     "bytes": size,
                     "error": error,
+                    "attempts": attempts,
                 }
             )
+            summary[status] = summary.get(status, 0) + 1
             print(f"[{quarter_label(year, quarter)}] {status}: {file_url}")
 
     manifest_path = os.path.join(args.output_dir, args.manifest)
@@ -256,6 +282,7 @@ def main():
                 "generated_at": time.strftime("%Y-%m-%dT%H:%M:%S"),
                 "base_url": args.base_url,
                 "quarters": [quarter_label(y, q) for y, q in latest_quarters],
+                "summary": summary,
                 "entries": manifest_entries,
             },
             f,

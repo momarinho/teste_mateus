@@ -87,6 +87,7 @@ O script:
 - Normaliza a estrutura em CSVs padronizados em `data/processed/normalized/`
 - Gera `data/processed/process_manifest.json`
 - Mantém `reg_ans` quando disponível para rastreabilidade entre etapas
+- Registra erros e um resumo de processamento no `process_manifest.json`
 
 ### Trade-off técnico (processamento incremental)
 
@@ -114,6 +115,7 @@ Saídas:
 - CSV consolidado: `data/processed/consolidado_despesas.csv`
 - ZIP: `data/processed/consolidado_despesas.zip`
 - CSV de inconsistências: `data/processed/consolidado_inconsistencias.csv`
+- Resumo de inconsistências: `data/processed/inconsistencias_resumo.json`
 
 ### Tratamento de inconsistências
 
@@ -128,3 +130,20 @@ Durante a consolidação, o script gera um CSV separado com inconsistências:
 Decisão: **não descarto registros automaticamente**; sinalizo no CSV de
 inconsistências para auditoria, mantendo transparência e permitindo decisões
 futuras (ex.: excluir ou ajustar somente na etapa de análise).
+
+## Self-annealing / Aprendizado com falhas
+
+Princípio adotado: o projeto fica mais resiliente a cada falha detectada.
+O ciclo é explícito e repetível:
+1) **Detectar** erro/caso limite
+2) **Registrar** (manifest, CSV de inconsistências, logs)
+3) **Corrigir/ajustar** a configuração ou a heurística
+4) **Repetir** com validação
+
+Onde foi aplicado:
+- **1.1**: manifest do download registra arquivos, status e erros, facilitando reexecução.
+- **1.2**: `process_manifest.json` registra colunas detectadas e erros por arquivo.
+- **1.3**: CSV de inconsistências separa casos suspeitos sem descartar dados.
+
+Isso não é simulated annealing clássico, mas segue a mesma ideia de iterar
+com base em falhas para endurecer o pipeline.
