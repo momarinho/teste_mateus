@@ -3,3 +3,5 @@ data/
 **/manifest.json
 teste_transformacao_validacao/*.csv
 *.zip
+**/__pycache__/
+*.pyc
