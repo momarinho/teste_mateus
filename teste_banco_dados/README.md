@@ -6,8 +6,10 @@ Este diretorio contem os scripts SQL para a etapa **3** do teste (carga de CSVs 
 
 - `01_schema_mysql.sql`: cria database, tabelas e indices (MySQL).
 - `02_load_mysql.sql`: carrega os CSVs via `LOAD DATA LOCAL INFILE` (MySQL).
+- `03_import_mysql.sql`: importa com validacao, usando staging e tabelas de rejeicao (MySQL).
 - `01_schema_postgres.sql`: cria schema, tabelas e indices (PostgreSQL).
 - `02_load_postgres.sql`: carrega os CSVs via `\copy` (psql).
+- `03_import_postgres.sql`: importa com validacao, usando staging e tabelas de rejeicao (PostgreSQL).
 
 ## Estrutura (3.2)
 
@@ -34,6 +36,12 @@ SOURCE teste_banco_dados/01_schema_mysql.sql;
 SOURCE teste_banco_dados/02_load_mysql.sql;
 ```
 
+Para importacao com validacao (3.3), use:
+
+```sql
+SOURCE teste_banco_dados/03_import_mysql.sql;
+```
+
 ## Como executar (PostgreSQL > 10)
 
 1) Abra o `psql` apontando para o banco desejado.
@@ -43,6 +51,12 @@ SOURCE teste_banco_dados/02_load_mysql.sql;
 ```sql
 \i teste_banco_dados/01_schema_postgres.sql
 \i teste_banco_dados/02_load_postgres.sql
+```
+
+Para importacao com validacao (3.3), use:
+
+```sql
+\i teste_banco_dados/03_import_postgres.sql
 ```
 
 ## Observacoes e trade-offs
@@ -55,3 +69,14 @@ SOURCE teste_banco_dados/02_load_mysql.sql;
 - `despesas_agregadas.csv` usa **virgula como separador decimal**. Os scripts fazem a conversao (virgula -> ponto) antes de inserir.
 - Para PostgreSQL foi usada uma tabela temporaria para converter os valores numericos.
 - As tabelas foram modeladas de forma simples, mantendo colunas em texto quando o CSV nao garante padrao estrito.
+
+## Importacao e tratamento de inconsistencias (3.3)
+
+- Encoding: os scripts definem UTF-8 (MySQL `CHARACTER SET utf8mb4`, PostgreSQL `ENCODING 'UTF8'`).
+- Campos obrigatorios ausentes: registros com `cnpj`, `razao_social`, `registro_operadora`,
+  `trimestre`, `ano` ou `valor_despesas` ausentes/invalidos sao **rejeitados** e gravados
+  nas tabelas `*_rejeitadas` com o motivo.
+- Strings em campos numericos: e feita tentativa de conversao (substitui virgula por ponto).
+  Se ainda nao for numerico, o registro e rejeitado.
+- Datas inconsistentes: tenta converter `YYYY-MM-DD` ou `DD/MM/YYYY`; se falhar, grava `NULL`
+  e mantem o registro (nao e campo critico para analises).
