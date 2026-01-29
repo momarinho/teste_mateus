@@ -2,6 +2,12 @@
 
 Este diretorio contem os scripts SQL para a etapa **3** do teste (carga de CSVs e preparacao do banco) com suporte a **MySQL 8.0** e **PostgreSQL > 10**.
 
+## Status de execucao
+
+- **MySQL**: scripts prontos, mas **nao executados localmente** (ambiente MySQL nao configurado).
+  A execucao e validacao sera feita em outro momento.
+- **PostgreSQL**: scripts prontos (nao executados neste ambiente).
+
 ## Arquivos
 
 - `01_schema_mysql.sql`: cria database, tabelas e indices (MySQL).
@@ -10,6 +16,8 @@ Este diretorio contem os scripts SQL para a etapa **3** do teste (carga de CSVs 
 - `01_schema_postgres.sql`: cria schema, tabelas e indices (PostgreSQL).
 - `02_load_postgres.sql`: carrega os CSVs via `\copy` (psql).
 - `03_import_postgres.sql`: importa com validacao, usando staging e tabelas de rejeicao (PostgreSQL).
+- `04_queries_mysql.sql`: queries analiticas do teste 3.4 (MySQL).
+- `04_queries_postgres.sql`: queries analiticas do teste 3.4 (PostgreSQL).
 
 ## Estrutura (3.2)
 
@@ -42,6 +50,12 @@ Para importacao com validacao (3.3), use:
 SOURCE teste_banco_dados/03_import_mysql.sql;
 ```
 
+Para executar as queries analiticas (3.4):
+
+```sql
+SOURCE teste_banco_dados/04_queries_mysql.sql;
+```
+
 ## Como executar (PostgreSQL > 10)
 
 1) Abra o `psql` apontando para o banco desejado.
@@ -57,6 +71,12 @@ Para importacao com validacao (3.3), use:
 
 ```sql
 \i teste_banco_dados/03_import_postgres.sql
+```
+
+Para executar as queries analiticas (3.4):
+
+```sql
+\i teste_banco_dados/04_queries_postgres.sql
 ```
 
 ## Observacoes e trade-offs
@@ -80,3 +100,13 @@ Para importacao com validacao (3.3), use:
   Se ainda nao for numerico, o registro e rejeitado.
 - Datas inconsistentes: tenta converter `YYYY-MM-DD` ou `DD/MM/YYYY`; se falhar, grava `NULL`
   e mantem o registro (nao e campo critico para analises).
+
+## Analises (3.4)
+
+- Query 1 (crescimento): considera apenas operadoras com dados no primeiro e no ultimo trimestre,
+  evitando divisao por zero e comparacoes com base incompleta.
+- Query 2 (UF): usa `despesas_agregadas` para calcular total por UF e media por operadora/UF.
+- Query 3 (acima da media): compara o total de cada operadora com a media do trimestre e conta
+  quem ficou acima em pelo menos 2 dos 3 trimestres mais recentes.
+  Trade-off: uso de CTEs por legibilidade e manutencao; custo aceitavel com indices em CNPJ
+  e `(ano, trimestre)`.
