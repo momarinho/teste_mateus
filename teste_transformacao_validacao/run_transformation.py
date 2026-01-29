@@ -24,7 +24,7 @@ ENRICHED_CSV_PATH = os.path.join(
 AGGREGATED_CSV_PATH = os.path.join(
     "teste_transformacao_validacao", "despesas_agregadas.csv"
 )
-AGGREGATED_ZIP_NAME = os.getenv("TESTE_ZIP_NAME", "Teste_seu_nome.zip")
+AGGREGATED_ZIP_NAME = os.getenv("TESTE_ZIP_NAME", "Teste_Mateus.zip")
 AGGREGATED_ZIP_PATH = os.path.join("teste_transformacao_validacao", AGGREGATED_ZIP_NAME)
 
 

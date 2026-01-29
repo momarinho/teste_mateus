@@ -84,7 +84,7 @@ de despesas por operadora/UF e, adicionalmente:
 
 Saídas:
 - `teste_transformacao_validacao/despesas_agregadas.csv`
-- `teste_transformacao_validacao/Teste_seu_nome.zip` (compactacao do CSV)
+- `teste_transformacao_validacao/Teste_Mateus.zip` (compactacao do CSV)
 
 Observacao: o ZIP e gerado pelo script e nao precisa ser versionado no Git.
 Observacao: para usar outro nome, defina a variavel de ambiente `TESTE_ZIP_NAME`.
