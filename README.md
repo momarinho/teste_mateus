@@ -5,6 +5,7 @@ Este repositorio cobre as fases **1** e **2** do teste.
 Para detalhes completos, consulte:
 - `teste_api_ans/README.md` (Teste 1: download, processamento e consolidacao)
 - `teste_transformacao_validacao/README.md` (Teste 2: validacao, enriquecimento e agregacao)
+- `teste_banco_dados/README.md` (Teste 3: banco de dados e analise)
 
 ## Execucao rapida (resumo)
 
@@ -19,6 +20,10 @@ python teste_api_ans/consolidate_ans_expenses.py
 ```bash
 python teste_transformacao_validacao/run_transformation.py
 ```
+
+### Teste 3
+- MySQL: executar `teste_banco_dados/01_schema_mysql.sql` e `teste_banco_dados/02_load_mysql.sql`
+- PostgreSQL: executar `teste_banco_dados/01_schema_postgres.sql` e `teste_banco_dados/02_load_postgres.sql`
 
 ## Observacoes
 - Os ZIPs gerados nas etapas intermediarias nao precisam ser versionados.
