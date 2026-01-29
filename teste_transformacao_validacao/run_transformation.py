@@ -1,5 +1,6 @@
 import os
 import re
+import zipfile
 
 import pandas as pd
 
@@ -19,6 +20,12 @@ OPERADORAS_LOCAL_PATH = os.path.join(
 ENRICHED_CSV_PATH = os.path.join(
     "teste_transformacao_validacao", "2.2_dados_enriquecidos.csv"
 )
+# Saída da Etapa 2.3
+AGGREGATED_CSV_PATH = os.path.join(
+    "teste_transformacao_validacao", "despesas_agregadas.csv"
+)
+AGGREGATED_ZIP_NAME = os.getenv("TESTE_ZIP_NAME", "Teste_seu_nome.zip")
+AGGREGATED_ZIP_PATH = os.path.join("teste_transformacao_validacao", AGGREGATED_ZIP_NAME)
 
 
 def validar_cnpj(cnpj: str) -> bool:
@@ -145,16 +152,81 @@ def run_enrichment(df_validated):
 
 
 def run_aggregation(df_enriched):
-    """Executa a etapa de agregação dos dados."""
-    print("--- Iniciando Etapa 2.3: Agregação de Dados ---")
+    """Executa a etapa de agregacao dos dados."""
+    print("--- Iniciando Etapa 2.3: Agregacao de Dados ---")
     if df_enriched is None:
-        print("Etapa de agregação pulada pois não há dados da etapa anterior.")
-        return
+        print("Etapa de agregacao pulada pois nao ha dados da etapa anterior.")
+        return None
 
-    # Lógica da Etapa 2.3 será implementada aqui.
-    print("Lógica de agregação ainda não implementada.")
+    df_valid = df_enriched[df_enriched["problemas_validacao"] == ""].copy()
+    if df_valid.empty:
+        print("Nenhuma linha valida para agregacao.")
+        df_agg = pd.DataFrame(
+            columns=pd.Index(
+                [
+                    "RazaoSocial",
+                    "UF",
+                    "total_despesas",
+                    "media_despesas_trimestre",
+                    "desvio_padrao_despesas",
+                ]
+            )
+        )
+        df_agg.to_csv(AGGREGATED_CSV_PATH, index=False, sep=";", decimal=",")
+        print(f"Arquivo com despesas agregadas salvo em: '{AGGREGATED_CSV_PATH}'")
+        os.makedirs(os.path.dirname(AGGREGATED_ZIP_PATH), exist_ok=True)
+        with zipfile.ZipFile(
+            AGGREGATED_ZIP_PATH, "w", compression=zipfile.ZIP_DEFLATED
+        ) as zf:
+            zf.write(AGGREGATED_CSV_PATH, arcname=os.path.basename(AGGREGATED_CSV_PATH))
+        print(f"Arquivo compactado salvo em: '{AGGREGATED_ZIP_PATH}'")
+        print("--- Etapa 2.3 Concluida ---\n")
+        return df_agg
 
-    print("--- Etapa 2.3 Concluída ---\n")
+    df_valid["ValorDespesas"] = pd.to_numeric(
+        df_valid["ValorDespesas"], errors="coerce"
+    )
+    df_valid["Ano"] = pd.to_numeric(df_valid["Ano"], errors="coerce")
+    df_valid["Trimestre"] = pd.to_numeric(df_valid["Trimestre"], errors="coerce")
+
+    quarterly_base = df_valid.dropna(subset=["Ano", "Trimestre"])
+    quarterly_totals = (
+        quarterly_base.groupby(
+            ["RazaoSocial", "UF", "Ano", "Trimestre"], dropna=False, as_index=False
+        )["ValorDespesas"]
+        .sum()
+        .rename(columns={"ValorDespesas": "total_trimestre"})
+    )
+
+    totals = (
+        df_valid.groupby(["RazaoSocial", "UF"], dropna=False, as_index=False)[
+            "ValorDespesas"
+        ]
+        .sum()
+        .rename(columns={"ValorDespesas": "total_despesas"})
+    )
+
+    stats = quarterly_totals.groupby(
+        ["RazaoSocial", "UF"], dropna=False, as_index=False
+    )["total_trimestre"].agg(
+        media_despesas_trimestre="mean",
+        desvio_padrao_despesas="std",
+    )
+
+    df_agg = totals.merge(stats, on=["RazaoSocial", "UF"], how="left")
+    df_agg = df_agg.sort_values("total_despesas", ascending=False)
+
+    df_agg.to_csv(AGGREGATED_CSV_PATH, index=False, sep=";", decimal=",")
+    print(f"Arquivo com despesas agregadas salvo em: '{AGGREGATED_CSV_PATH}'")
+    os.makedirs(os.path.dirname(AGGREGATED_ZIP_PATH), exist_ok=True)
+    with zipfile.ZipFile(
+        AGGREGATED_ZIP_PATH, "w", compression=zipfile.ZIP_DEFLATED
+    ) as zf:
+        zf.write(AGGREGATED_CSV_PATH, arcname=os.path.basename(AGGREGATED_CSV_PATH))
+    print(f"Arquivo compactado salvo em: '{AGGREGATED_ZIP_PATH}'")
+
+    print("--- Etapa 2.3 Concluida ---\n")
+    return df_agg
 
 
 def main():

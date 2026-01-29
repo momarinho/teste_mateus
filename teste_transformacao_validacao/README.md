@@ -74,9 +74,35 @@ python teste_transformacao_validacao/run_transformation.py
 
 ### 2.3. Agregação - Estratégia de Ordenação
 
-**(Decisão a ser documentada aqui)**
+Nesta etapa, o script agrega as despesas **por RazaoSocial e UF**, calcula o total
+de despesas por operadora/UF e, adicionalmente:
 
-*   **Abordagem Escolhida:**
-*   **Justificativa:**
+* **Média de despesas por trimestre**: calculada sobre o total trimestral agregado
+  (soma por `Ano` + `Trimestre`), e depois média por operadora/UF.
+* **Desvio padrão das despesas**: calculado sobre os totais trimestrais para
+  identificar operadoras com valores mais variáveis.
+
+Saídas:
+- `teste_transformacao_validacao/despesas_agregadas.csv`
+- `teste_transformacao_validacao/Teste_seu_nome.zip` (compactacao do CSV)
+
+Observacao: o ZIP e gerado pelo script e nao precisa ser versionado no Git.
+Observacao: para usar outro nome, defina a variavel de ambiente `TESTE_ZIP_NAME`.
+Observacao: o ZIP final do projeto (entrega) deve ser gerado separadamente ao final.
+
+
+
+
+Observação: a agregação considera apenas linhas **sem problemas de validação**
+(`problemas_validacao == ""`), mantendo a consistência com a etapa 2.1. Linhas sem
+`Ano`/`Trimestre` são desconsideradas apenas para o cálculo de média/desvio padrão.
+
+**Trade-off de ordenação**
+
+* **Abordagem escolhida:** ordenação em memória com `pandas.sort_values`.
+* **Justificativa:** o volume esperado é compatível com processamento em RAM e a
+  ordenação em memória é simples e eficiente. Para volumes muito grandes, uma
+  alternativa seria ordenar incrementalmente (external sort) ou usar um banco
+  de dados para operações de agregação e ordenação.
 
 ---

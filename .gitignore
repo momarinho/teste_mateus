@@ -2,3 +2,4 @@ data/
 **/data/
 **/manifest.json
 teste_transformacao_validacao/*.csv
+*.zip
