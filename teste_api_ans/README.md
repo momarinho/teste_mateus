@@ -131,6 +131,13 @@ Decisão: **não descarto registros automaticamente**; sinalizo no CSV de
 inconsistências para auditoria, mantendo transparência e permitindo decisões
 futuras (ex.: excluir ou ajustar somente na etapa de análise).
 
+Observação importante: os arquivos de demonstrações contábeis mais recentes
+trazem `REG_ANS`, mas não possuem `CNPJ` e `RazaoSocial`. Para cumprir o formato
+exigido do consolidado, o script de consolidação tenta preencher esses campos
+fazendo um lookup no cadastro de operadoras (CADOP) por `REG_ANS`. Caso o
+cadastro não esteja disponível, os campos permanecem vazios e a situação é
+reportada como inconsistência.
+
 ### Notas de revisao
 
 - Revisao do pipeline: ajuste de deteccao de trimestre quando a pasta segue `YYYY/1T/`.
