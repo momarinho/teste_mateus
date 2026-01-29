@@ -5,7 +5,15 @@ import os
 import re
 import zipfile
 from collections import defaultdict
-from typing import Dict, Iterable, List, Optional, Tuple
+from typing import Dict, Iterable, List, Optional, Tuple, TypedDict
+
+
+class RowEntry(TypedDict):
+    cnpj: str
+    base_row: List[str]
+    issues: List[str]
+    source: str
+
 
 DEFAULT_INPUT_DIR = os.path.join("data", "processed", "normalized")
 DEFAULT_OUTPUT_DIR = os.path.join("data", "processed")
@@ -91,6 +99,7 @@ def consolidate(
     issue_rows: List[List[str]] = []
     issue_counts: Dict[str, int] = defaultdict(int)
     cnpj_razao: Dict[str, set] = defaultdict(set)
+    row_entries: List[RowEntry] = []
 
     for path in iter_normalized_files(input_dir):
         with open(path, "r", encoding="utf-8", newline="") as f:
@@ -113,9 +122,6 @@ def consolidate(
                 if cnpj and razao:
                     cnpj_razao[cnpj].add(razao)
 
-                for issue in issues:
-                    issue_counts[issue] += 1
-
                 base_row = [
                     cnpj,
                     razao,
@@ -123,19 +129,34 @@ def consolidate(
                     "" if year is None else str(year),
                     "" if valor is None else f"{valor:.2f}",
                 ]
-                rows_out.append(base_row)
-                if issues:
-                    issue_rows.append(
-                        base_row
-                        + [
-                            ",".join(sorted(set(issues))),
-                            os.path.basename(path),
-                        ]
-                    )
+                row_entries.append(
+                    {
+                        "cnpj": cnpj,
+                        "base_row": base_row,
+                        "issues": issues,
+                        "source": os.path.basename(path),
+                    }
+                )
 
-    for cnpj, razoes in cnpj_razao.items():
-        if len(razoes) > 1:
-            issue_counts["cnpj_com_razoes_diferentes"] += 1
+    duplicated_cnpj = {cnpj for cnpj, razoes in cnpj_razao.items() if len(razoes) > 1}
+    for entry in row_entries:
+        issues = entry["issues"]
+        cnpj = entry["cnpj"]
+        if cnpj and cnpj in duplicated_cnpj:
+            if "cnpj_com_razoes_diferentes" not in issues:
+                issues.append("cnpj_com_razoes_diferentes")
+        for issue in issues:
+            issue_counts[issue] += 1
+        base_row = entry["base_row"]
+        rows_out.append(base_row)
+        if issues:
+            issue_rows.append(
+                base_row
+                + [
+                    ",".join(sorted(set(issues))),
+                    entry["source"],
+                ]
+            )
 
     return rows_out, issue_rows, dict(issue_counts)
 

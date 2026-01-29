@@ -67,13 +67,26 @@ def extract_year_from_url(url):
     return None
 
 
-def extract_quarter_from_url(url):
+def extract_quarter_from_url(url, year_hint=None):
     path = urlparse(url).path
-    match = re.search(r"([1-4])T(20\d{2})", path)
+    match = re.search(r"([1-4])T(20\d{2})", path, re.IGNORECASE)
     if match:
         quarter = int(match.group(1))
         year = int(match.group(2))
         return year, quarter
+    match = re.search(r"/(20\d{2})/([1-4])T/?", path, re.IGNORECASE)
+    if match:
+        return int(match.group(1)), int(match.group(2))
+    match = re.search(r"/(20\d{2})/T([1-4])/?", path, re.IGNORECASE)
+    if match:
+        return int(match.group(1)), int(match.group(2))
+    if year_hint is not None:
+        match = re.search(r"/([1-4])T/?$", path, re.IGNORECASE)
+        if match:
+            return int(year_hint), int(match.group(1))
+        match = re.search(r"/T([1-4])/?$", path, re.IGNORECASE)
+        if match:
+            return int(year_hint), int(match.group(1))
     return None
 
 
@@ -91,7 +104,7 @@ def gather_quarter_entries(base_url, timeout):
     year_urls = gather_year_urls(base_url, timeout)
     for year, year_url in year_urls.items():
         for link in list_links(year_url, timeout):
-            quarter = extract_quarter_from_url(link)
+            quarter = extract_quarter_from_url(link, year_hint=year)
             if not quarter:
                 continue
             quarter_map.setdefault(quarter, []).append(link)

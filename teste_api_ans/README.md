@@ -42,7 +42,7 @@ Opções úteis:
 2) Identifica pastas/arquivos por **ano** e **trimestre** com regex `1T2025`, `2T2024`, etc.
 3) Seleciona os **3 trimestres mais recentes**, mesmo se houver variações:
    - arquivos diretamente no ano
-   - pastas por trimestre
+   - pastas por trimestre (ex: `YYYY/1T/` ou `1TYYYY`)
    - múltiplos arquivos por trimestre
 4) Baixa todos os arquivos encontrados para cada trimestre selecionado.
 
@@ -130,6 +130,12 @@ Durante a consolidação, o script gera um CSV separado com inconsistências:
 Decisão: **não descarto registros automaticamente**; sinalizo no CSV de
 inconsistências para auditoria, mantendo transparência e permitindo decisões
 futuras (ex.: excluir ou ajustar somente na etapa de análise).
+
+### Notas de revisao
+
+- Revisao do pipeline: ajuste de deteccao de trimestre quando a pasta segue `YYYY/1T/`.
+- Revisao da consolidacao: linhas com CNPJ duplicado e razoes sociais diferentes
+  agora sao marcadas no CSV de inconsistencias.
 
 ## Self-annealing / Aprendizado com falhas
 

@@ -56,17 +56,19 @@ python teste_transformacao_validacao/run_transformation.py
 
 ### 2.2. Enriquecimento de Dados - Estratégia de Join e Processamento
 
-**(Decisão a ser documentada aqui)**
+**(Decisão documentada)**
 
-*   **Abordagem Escolhida:**
-*   **Justificativa:**
+*   **Abordagem Escolhida:** **Join em memória com Pandas.** Foi utilizada a função `pandas.merge()` para realizar a junção dos dados.
+
+*   **Justificativa:** O volume de dados de ambos os arquivos (despesas validadas e cadastro de operadoras) é pequeno o suficiente para ser processado confortavelmente na memória RAM da maioria dos sistemas modernos. Esta abordagem é significativamente mais simples e rápida de implementar em comparação com alternativas como a carga em um banco de dados (ex: SQLite) ou o desenvolvimento de um algoritmo de join incremental (streaming). Dado o contexto, o `pandas.merge()` é a escolha mais idiomática e eficiente.
 
 ### 2.2. Enriquecimento de Dados - Tratamento de Registros sem Match e Duplicados
 
-**(Decisão a ser documentada aqui)**
+**(Decisão documentada)**
 
-*   **Registros sem match:**
-*   **CNPJs duplicados:**
+*   **Registros sem match:** A junção foi realizada utilizando um **`left join`** (`how='left'`). Isso garante que **todos os registros do arquivo de despesas sejam mantidos**, mesmo que não encontrem uma correspondência de CNPJ no arquivo de cadastro. Para as linhas sem correspondência, as novas colunas (`RegistroANS`, `Modalidade`, `UF`) são preenchidas com valores nulos (`NaN`), tornando explícita a falha no enriquecimento sem haver perda de dados.
+
+*   **CNPJs duplicados:** No arquivo de cadastro de operadoras, foi aplicada a estratégia de **manter apenas a última ocorrência** de qualquer CNPJ duplicado (`drop_duplicates(subset='CNPJ', keep='last')`). Essa é uma abordagem determinística que presume que a entrada mais recente no arquivo é a mais atualizada. Isso evita a criação de dados duplicados no resultado final após o join.
 
 ---
 
