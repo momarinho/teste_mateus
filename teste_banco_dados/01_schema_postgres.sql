@@ -8,6 +8,7 @@ DROP TABLE IF EXISTS consolidado_despesas;
 DROP TABLE IF EXISTS despesas_agregadas;
 
 CREATE TABLE operadoras (
+  operadora_id BIGSERIAL PRIMARY KEY,
   registro_operadora INTEGER,
   cnpj CHAR(14),
   razao_social TEXT,
@@ -32,8 +33,10 @@ CREATE TABLE operadoras (
 
 CREATE INDEX idx_operadoras_cnpj ON operadoras (cnpj);
 CREATE INDEX idx_operadoras_registro ON operadoras (registro_operadora);
+CREATE INDEX idx_operadoras_uf ON operadoras (uf);
 
 CREATE TABLE consolidado_despesas (
+  despesa_id BIGSERIAL PRIMARY KEY,
   cnpj CHAR(14),
   razao_social TEXT,
   trimestre SMALLINT,
@@ -43,8 +46,10 @@ CREATE TABLE consolidado_despesas (
 
 CREATE INDEX idx_consolidado_cnpj ON consolidado_despesas (cnpj);
 CREATE INDEX idx_consolidado_ano_tri ON consolidado_despesas (ano, trimestre);
+CREATE INDEX idx_consolidado_razao ON consolidado_despesas (razao_social);
 
 CREATE TABLE despesas_agregadas (
+  agregada_id BIGSERIAL PRIMARY KEY,
   razao_social TEXT,
   uf CHAR(2),
   total_despesas NUMERIC(20,6),
@@ -53,3 +58,4 @@ CREATE TABLE despesas_agregadas (
 );
 
 CREATE INDEX idx_agregadas_uf ON despesas_agregadas (uf);
+CREATE INDEX idx_agregadas_razao ON despesas_agregadas (razao_social);
