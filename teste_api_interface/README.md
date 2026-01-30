@@ -83,6 +83,19 @@ Para a rota `/api/estatisticas`, que envolve cálculos agregados (somas, médias
     - A Opção C (pré-calcular em uma tabela) oferece a melhor performance, mas adiciona uma complexidade significativa ao sistema (necessidade de jobs agendados, triggers no banco, etc.).
     - Um cache simples em memória (Opção B) atinge um balanço ideal: oferece ótima performance para a grande maioria das chamadas com uma implementação muito mais simples, adequada à escala deste projeto. A consistência dos dados é garantida por um TTL (Time-To-Live) de várias horas, mais do que suficiente para este cenário.
 
+### 4.2.4 Estrutura de Resposta da API: **Dados + Metadados** (Opção B)
+
+**Justificativa:**
+Para todas as respostas paginadas, a API retornará um objeto JSON contendo a lista de dados solicitada aninhada em um campo (`data`), junto com metadados sobre a paginação.
+
+1.  **Necessidade do Frontend:**
+    - Uma interface de usuário precisa de mais do que apenas a lista de itens da página atual. Para construir componentes de paginação (ex: botões de página `1, 2, 3...`, "Próxima", "Anterior", ou exibir "Mostrando 1-10 de 123 itens"), o frontend precisa saber o `total` de itens, a `página` atual e o `limite`.
+    - Retornar apenas um array de dados (Opção A) forçaria o frontend a fazer uma segunda chamada à API apenas para obter esses metadados, o que é ineficiente.
+
+2.  **Clareza e Escalabilidade:**
+    - Aninhar os resultados em um campo `data` cria um padrão de resposta consistente e previsível. Isso facilita a extensibilidade da API, permitindo adicionar outros campos de metadados no futuro (como informações de debug, tempo de execução da query, etc.) sem quebrar a compatibilidade com o cliente.
+    - É uma prática padrão em APIs REST modernas e facilita o trabalho da equipe de frontend.
+
 ---
 
 ## Próximos Passos (Roadmap)
@@ -92,5 +105,5 @@ Para a rota `/api/estatisticas`, que envolve cálculos agregados (somas, médias
 - [x] 4.2.1 Framework escolhido e justificado
 - [x] 4.2.2 Paginação escolhida e justificada
 - [x] 4.2.3 Cache/consulta direta escolhido e justificado
-- [ ] 4.2.4 Estrutura de resposta escolhida e justificada
+- [x] 4.2.4 Estrutura de resposta escolhida e justificada
 - [ ] 4.3 Setup do Frontend (Vue.js)
