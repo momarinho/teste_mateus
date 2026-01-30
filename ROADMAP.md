@@ -39,3 +39,10 @@ Legenda: [x] feito | [ ] pendente
 ## Entrega
 - [ ] Gerar ZIP final: Teste_{seu_nome}.zip
 - [ ] Push final
+
+## 5. Diferenciais (Não Obrigatórios)
+- [x] **Preocupação com performance**: Índices no BD, paginação no front/back, processamento incremental.
+- [x] **Arquitetura bem planejada**: Separação de responsabilidades (Service layer, Routers, Store, Components).
+- [x] **Uso adequado de versionamento (Git)**: Repositório estruturado.
+- [ ] **Implementação de testes adicionais**: (Sugestão: Testes unitários com Pytest para o Backend).
+- [ ] **Aplicação de recursos de nuvem**: (Opcional: Dockerfile ou Deploy em Vercel/Render).

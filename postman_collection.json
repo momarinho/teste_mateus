@@ -1,0 +1,175 @@
+{
+    "info": {
+        "_postman_id": "a9b8c7d6-e5f4-4321-8765-432109876543",
+        "name": "Teste Intuitive Care API",
+        "description": "Coleção de requisições para a API do Teste Técnico da Intuitive Care via FastAPI.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        ""
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Listar Operadoras (Paginado)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/api/operadoras/?page=1&limit=10",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "api",
+                        "operadoras",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "page",
+                            "value": "1",
+                            "description": "Número da página"
+                        },
+                        {
+                            "key": "limit",
+                            "value": "10",
+                            "description": "Itens por página"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Buscar Operadora (Busca Textual)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/api/operadoras/?search=unimed",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "api",
+                        "operadoras",
+                        ""
+                    ],
+                    "query": [
+                        {
+                            "key": "search",
+                            "value": "unimed",
+                            "description": "Termo de busca (Razão Social ou CNPJ)"
+                        }
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Detalhes da Operadora (Por CNPJ)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/api/operadoras/27452545000195",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "api",
+                        "operadoras",
+                        "27452545000195"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Histórico de Despesas da Operadora",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/api/despesas/operadora/27452545000195",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "api",
+                        "despesas",
+                        "operadora",
+                        "27452545000195"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Despesas por UF (Gráfico)",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/api/despesas/por-uf",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "api",
+                        "despesas",
+                        "por-uf"
+                    ]
+                }
+            },
+            "response": []
+        },
+        {
+            "name": "Estatísticas Gerais",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "http://localhost:8000/api/despesas/estatisticas",
+                    "protocol": "http",
+                    "host": [
+                        "localhost"
+                    ],
+                    "port": "8000",
+                    "path": [
+                        "api",
+                        "despesas",
+                        "estatisticas"
+                    ]
+                }
+            },
+            "response": []
+        }
+    ]
+}
