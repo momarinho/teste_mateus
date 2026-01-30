@@ -7,3 +7,9 @@ teste_transformacao_validacao/*.csv
 *.pyc
 claude.json
 .claude/
+
+.env
+
+venv/
+
+backend/venv/

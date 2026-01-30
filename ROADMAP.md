@@ -22,7 +22,7 @@ Legenda: [x] feito | [ ] pendente
 - [x] Executar scripts em MySQL (concluido em 30/01/2026)
 
 ## 4. Teste de API e Interface Web
-- [ ] 4.1 Definir fonte de dados (BD ou CSV)
+- [x] 4.1 Definir fonte de dados (BD ou CSV)
 - [ ] 4.2 Backend (Flask/FastAPI) + trade-offs
 - [ ] 4.2.1 Framework escolhido e justificado
 - [ ] 4.2.2 Paginacao escolhida e justificada
