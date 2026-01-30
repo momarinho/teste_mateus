@@ -68,6 +68,21 @@ Para a rota `/api/operadoras`, adotei a paginação baseada em **offset** (`page
     - **Cursor/Keyset** é mais performático para datasets gigantes e que mudam com frequência, pois evita o `OFFSET`. No entanto, ele não permite pular para páginas arbitrárias e é mais complexo de implementar.
     - Dado que a lista de operadoras não muda em tempo real, o pequeno risco de inconsistência (um item novo mover resultados entre páginas) é mínimo e não justifica a complexidade extra de um cursor para este caso de uso.
 
+### 4.2.3 Cache vs. Queries Diretas: **Cache na Aplicação** (Opção B)
+
+**Justificativa:**
+Para a rota `/api/estatisticas`, que envolve cálculos agregados (somas, médias) sobre um grande volume de dados, a estratégia escolhida foi **cachear os resultados na memória da aplicação por um tempo determinado**.
+
+1.  **Frequência de Atualização dos Dados:**
+    - Os dados-fonte (demonstrações contábeis) são atualizados trimestralmente pela ANS. Não há necessidade de calcular estatísticas em tempo real (Opção A) para cada requisição, pois isso geraria uma carga desnecessária no banco de dados para obter um resultado que não muda.
+
+2.  **Performance e Experiência do Usuário:**
+    - O primeiro cálculo pode ser lento. Armazenar o resultado em cache faz com que todas as requisições subsequentes sejam praticamente instantâneas, melhorando drasticamente a performance da API e a experiência do usuário no frontend.
+
+3.  **Simplicidade vs. Pré-cálculo:**
+    - A Opção C (pré-calcular em uma tabela) oferece a melhor performance, mas adiciona uma complexidade significativa ao sistema (necessidade de jobs agendados, triggers no banco, etc.).
+    - Um cache simples em memória (Opção B) atinge um balanço ideal: oferece ótima performance para a grande maioria das chamadas com uma implementação muito mais simples, adequada à escala deste projeto. A consistência dos dados é garantida por um TTL (Time-To-Live) de várias horas, mais do que suficiente para este cenário.
+
 ---
 
 ## Próximos Passos (Roadmap)
@@ -76,6 +91,6 @@ Para a rota `/api/operadoras`, adotei a paginação baseada em **offset** (`page
 - [x] 4.2 Setup do Servidor (FastAPI)
 - [x] 4.2.1 Framework escolhido e justificado
 - [x] 4.2.2 Paginação escolhida e justificada
-- [ ] 4.2.3 Cache/consulta direta escolhido e justificado
+- [x] 4.2.3 Cache/consulta direta escolhido e justificado
 - [ ] 4.2.4 Estrutura de resposta escolhida e justificada
 - [ ] 4.3 Setup do Frontend (Vue.js)
