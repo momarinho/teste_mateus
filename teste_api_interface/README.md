@@ -51,6 +51,23 @@ Optei pelo **FastAPI** em detrimento do Flask, considerando os seguintes pontos:
 4.  **Facilidade de Manutenção:**
     - A estrutura modular (Routers, Schemas, Services) incentivada pelo FastAPI, aliada à injeção de dependências, facilita a manutenção e escalabilidade do projeto em comparação a um setup Flask básico que exigiria mais decisões de arquitetura e bibliotecas de terceiros (como Flask-RESTful ou Marshmallow).
 
+### 4.2.2 Estratégia de Paginação: **Offset-based** (Opção A)
+
+**Justificativa:**
+Para a rota `/api/operadoras`, adotei a paginação baseada em **offset** (`page` e `limit`).
+
+1.  **Simplicidade de Implementação e Uso:**
+    - É a abordagem mais intuitiva e fácil de implementar tanto no backend (usando `OFFSET` e `LIMIT` em SQL) quanto no frontend (calculando o número da página).
+    - Permite que o usuário navegue diretamente para uma página específica (ex: "ir para a página 5"), o que é um requisito comum em interfaces de usuário.
+
+2.  **Adequado ao Volume de Dados:**
+    - O volume de dados de operadoras da ANS (milhares) é perfeitamente gerenciável por esta abordagem. Problemas de performance com `OFFSET` geralmente ocorrem apenas com milhões de registros e páginas muito distantes, o que não é o cenário aqui.
+    - O custo de uma consulta a mais para obter a contagem total (`COUNT(*)`) é aceitável e permite exibir o número total de páginas no frontend.
+
+3.  **Trade-offs vs. Cursor/Keyset:**
+    - **Cursor/Keyset** é mais performático para datasets gigantes e que mudam com frequência, pois evita o `OFFSET`. No entanto, ele não permite pular para páginas arbitrárias e é mais complexo de implementar.
+    - Dado que a lista de operadoras não muda em tempo real, o pequeno risco de inconsistência (um item novo mover resultados entre páginas) é mínimo e não justifica a complexidade extra de um cursor para este caso de uso.
+
 ---
 
 ## Próximos Passos (Roadmap)
@@ -58,7 +75,7 @@ Optei pelo **FastAPI** em detrimento do Flask, considerando os seguintes pontos:
 - [x] 4.1 Preparação de dados (Conexão validada)
 - [x] 4.2 Setup do Servidor (FastAPI)
 - [x] 4.2.1 Framework escolhido e justificado
-- [ ] 4.2.2 Paginação escolhida e justificada
+- [x] 4.2.2 Paginação escolhida e justificada
 - [ ] 4.2.3 Cache/consulta direta escolhido e justificado
 - [ ] 4.2.4 Estrutura de resposta escolhida e justificada
 - [ ] 4.3 Setup do Frontend (Vue.js)
