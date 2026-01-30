@@ -24,7 +24,7 @@ Legenda: [x] feito | [ ] pendente
 ## 4. Teste de API e Interface Web
 - [x] 4.1 Definir fonte de dados (BD ou CSV)
 - [x] 4.2 Backend (Flask/FastAPI) + trade-offs
-- [ ] 4.2.1 Framework escolhido e justificado
+- [x] 4.2.1 Framework escolhido e justificado
 - [ ] 4.2.2 Paginacao escolhida e justificada
 - [ ] 4.2.3 Cache/consulta direta escolhido e justificado
 - [ ] 4.2.4 Estrutura de resposta escolhida e justificada
