@@ -19,7 +19,7 @@ Legenda: [x] feito | [ ] pendente
 - [x] 3.2 DDLs com PKs/indices + trade-offs documentados
 - [x] 3.3 Importacao validada + tratamento de inconsistencias documentado
 - [x] 3.4 Queries analiticas + justificativas documentadas
-- [ ] Executar scripts em MySQL (ambiente ainda nao configurado)
+- [x] Executar scripts em MySQL (concluido em 30/01/2026)
 
 ## 4. Teste de API e Interface Web
 - [ ] 4.1 Definir fonte de dados (BD ou CSV)
