@@ -112,4 +112,24 @@ A documentação interativa (Swagger UI) está disponível em `/docs` quando o b
 Além disso, uma **Postman Collection** (`postman_collection.json`) está incluída na raiz do projeto para testes externos.
 
 ---
+## 🧪 Testes Automatizados (Diferencial)
+
+Foi implementada uma suíte de testes unitários para o Backend, garantindo a integridade dos principais endpoints e regras de negócio.
+
+Para executar:
+```bash
+cd teste_api_interface/backend
+# Instale as dependências de teste
+pip install pytest httpx
+# Execute os testes
+python -m pytest test_main.py
+```
+O resultado deve exibir `5 passed`, cobrindo:
+1. Health Check
+2. Listagem Paginada
+3. Busca Válida
+4. Tratamento de Erro (404)
+5. Estatísticas Consolidadas
+
+---
 **Desenvolvido por Mateus Marinho**
