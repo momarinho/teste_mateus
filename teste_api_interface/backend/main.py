@@ -1,10 +1,12 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from contextlib import asynccontextmanager
 
 from database import engine, Base
 from check_setup import check_db_and_csv
 from config import settings
+from routers import operadoras, despesas
 
 # Create database tables (if database connection is available)
 # In production, use Alembic for migrations.
@@ -27,6 +29,18 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+
+# CORS Middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # For development, allow all. In prod, specify.
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(operadoras.router)
+app.include_router(despesas.router)
 
 @app.get("/", tags=["Health"])
 def health_check():

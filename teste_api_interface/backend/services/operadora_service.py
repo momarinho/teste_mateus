@@ -44,9 +44,14 @@ def get_operadoras(
         
         # Filtering
         if search:
-            # Case insensitive search in razao_social
-            search = search.lower()
-            df = df[df['razao_social'].str.lower().str.contains(search, na=False)]
+            # Case insensitive search in razao_social OR cnpj
+            search_clean = search.lower().strip()
+            # For dataframes we can do boolean indexing
+            # We check if razao_social contains search OR cnpj contains search
+            df = df[
+                df['razao_social'].str.lower().str.contains(search_clean, na=False) | 
+                df['cnpj'].str.contains(search_clean, na=False)
+            ]
         
         total = len(df)
         
@@ -69,7 +74,13 @@ def get_operadoras(
         query = db.query(OperadoraModel)
         
         if search:
-            query = query.filter(OperadoraModel.razao_social.ilike(f"%{search}%"))
+            from sqlalchemy import or_
+            query = query.filter(
+                or_(
+                    OperadoraModel.razao_social.ilike(f"%{search}%"),
+                    OperadoraModel.cnpj.ilike(f"%{search}%")
+                )
+            )
             
         total = query.count()
         operadoras = query.offset(offset).limit(limit).all()

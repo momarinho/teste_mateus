@@ -1,0 +1,206 @@
+{
+	"info": {
+		"_postman_id": "teste-mateus-collection",
+		"name": "Teste Mateus - Operadoras & Despesas API",
+		"description": "Collection for testing the Operadoras and Despesas API.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List Operadoras",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/operadoras/?page=1&limit=10",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"operadoras",
+						""
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "1"
+						},
+						{
+							"key": "limit",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Search Operadora (Razao Social)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/operadoras/?search=UNIMED",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"operadoras",
+						""
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "UNIMED"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Operadora Details",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/operadoras/:cnpj",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"operadoras",
+						":cnpj"
+					],
+					"variable": [
+						{
+							"key": "cnpj",
+							"value": "00000000000000",
+							"description": "Replace with valid CNPJ"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Despesas por UF (Chart)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/despesas/por-uf",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"despesas",
+						"por-uf"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Despesas History by Operadora",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/despesas/operadora/:cnpj",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"despesas",
+						"operadora",
+						":cnpj"
+					],
+					"variable": [
+						{
+							"key": "cnpj",
+							"value": "00000000000000"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Estatisticas Gerais",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://127.0.0.1:8000/api/despesas/estatisticas",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "8000",
+					"path": [
+						"api",
+						"despesas",
+						"estatisticas"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -16,11 +16,11 @@ router = APIRouter(
 def read_operadoras(
     page: int = Query(1, ge=1, description="Page number"),
     limit: int = Query(10, ge=1, le=100, description="Items per page"),
-    search: Optional[str] = Query(None, description="Search by Razao Social"),
+    search: Optional[str] = Query(None, description="Search by Razao Social or CNPJ"),
     db: Session = Depends(get_db)
 ):
     """
-    Lista operadoras com paginacao e filtro opcional.
+    Lista operadoras com paginacao e filtro opcional (Razao Social ou CNPJ).
     """
     operadoras_list, total_count = operadora_service.get_operadoras(db, page, limit, search)
     

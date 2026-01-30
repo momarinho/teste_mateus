@@ -6,6 +6,7 @@ Para detalhes completos, consulte:
 - `teste_api_ans/README.md` (Teste 1: download, processamento e consolidacao)
 - `teste_transformacao_validacao/README.md` (Teste 2: validacao, enriquecimento e agregacao)
 - `teste_banco_dados/README.md` (Teste 3: banco de dados e analise)
+- `teste_api_interface/README.md` (Teste 4: API FastAPI e Interface Vue.js)
 
 ## Execucao rapida (resumo)
 
@@ -26,6 +27,16 @@ python teste_transformacao_validacao/run_transformation.py
 - MySQL (validacao + analises): `teste_banco_dados/03_import_mysql.sql` e `teste_banco_dados/04_queries_mysql.sql`
 - PostgreSQL: executar `teste_banco_dados/01_schema_postgres.sql` e `teste_banco_dados/02_load_postgres.sql`
 - PostgreSQL (validacao + analises): `teste_banco_dados/03_import_postgres.sql` e `teste_banco_dados/04_queries_postgres.sql`
+
+### Teste 4 (Web Interface)
+- Backend:
+  ```bash
+  cd teste_api_interface/backend && pip install -r requirements.txt && uvicorn main:app --reload
+  ```
+- Frontend:
+  ```bash
+  cd teste_api_interface/frontend && npm install && npm run dev
+  ```
 
 ## Observacoes
 - Os ZIPs gerados nas etapas intermediarias nao precisam ser versionados.

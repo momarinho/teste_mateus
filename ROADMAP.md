@@ -25,16 +25,16 @@ Legenda: [x] feito | [ ] pendente
 - [x] 4.1 Definir fonte de dados (BD ou CSV)
 - [x] 4.2 Backend (Flask/FastAPI) + trade-offs
 - [x] 4.2.1 Framework escolhido e justificado
-- [ ] 4.2.2 Paginacao escolhida e justificada
-- [ ] 4.2.3 Cache/consulta direta escolhido e justificado
-- [ ] 4.2.4 Estrutura de resposta escolhida e justificada
-- [ ] 4.3 Frontend Vue + trade-offs
-- [ ] 4.3.1 Busca/filtro escolhido e justificado
-- [ ] 4.3.2 Gerenciamento de estado escolhido e justificado
-- [ ] 4.3.3 Performance da tabela documentada
-- [ ] 4.3.4 Erros/loading/dados vazios documentados
-- [ ] 4.4 Postman collection + exemplos
-- [ ] Documentacao geral no README
+- [x] 4.2.2 Paginacao escolhida e justificada (Paginação Limit/Offset)
+- [x] 4.2.3 Cache/consulta direta escolhido e justificado (Cache simples em memória para CSV)
+- [x] 4.2.4 Estrutura de resposta escolhida e justificada (JSON Padronizado: data, meta)
+- [x] 4.3 Frontend Vue + trade-offs (Ver `frontend/ARCHITECTURE.md`)
+- [x] 4.3.1 Busca/filtro escolhido e justificado (Server-side)
+- [x] 4.3.2 Gerenciamento de estado escolhido e justificado (Pinia)
+- [x] 4.3.3 Performance da tabela documentada (Paginação)
+- [x] 4.3.4 Erros/loading/dados vazios documentados
+- [x] 4.4 Postman collection + exemplos (`teste_api_interface/postman_collection.json`)
+- [x] Documentacao geral no README
 
 ## Entrega
 - [ ] Gerar ZIP final: Teste_{seu_nome}.zip
