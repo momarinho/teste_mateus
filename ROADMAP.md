@@ -14,7 +14,7 @@ Legenda: [x] feito | [ ] pendente
 - [x] 2.2 Enriquecimento (join CADOP) + tratamento de falhas documentado
 - [x] 2.3 Agregacao (total, media, desvio) + ordenacao + ZIP
 - [x] Documentacao (README Teste 2)
-- [ ] Gerar artefatos locais (despesas_agregadas.csv e Teste_{seu_nome}.zip)
+- [x] Gerar artefatos locais (despesas_agregadas.csv e Teste_{seu_nome}.zip)
 
 ## 3. Teste de Banco de Dados e Analise
 - [x] 3.1 Preparacao: CSVs gerados e listados
