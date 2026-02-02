@@ -37,13 +37,14 @@ Legenda: [x] feito | [ ] pendente
 - [x] 4.3.4 Erros/loading/dados vazios documentados
 - [x] 4.4 Postman collection + exemplos (`teste_api_interface/postman_collection.json`)
 - [x] Documentacao geral no README
-- [ ] Ajustar rotas conforme enunciado: GET /api/estatisticas e GET /api/operadoras/{cnpj}/despesas
-- [ ] Atualizar Postman para refletir as rotas exigidas
-- [ ] Garantir compatibilidade do modo CSV (mapear colunas CNPJ/RazaoSocial/UF)
+- [x] Ajustar rotas conforme enunciado: GET /api/estatisticas e GET /api/operadoras/{cnpj}/despesas
+- [x] Atualizar Postman para refletir as rotas exigidas
+- [x] Garantir compatibilidade do modo CSV (mapear colunas CNPJ/RazaoSocial/UF)
 
 ## Entrega
-- [ ] Gerar ZIP final: Teste_{seu_nome}.zip
-- [ ] Push final
+- [x] Gerar ZIP final: Teste_{seu_nome}.zip
+- [x] Push final
+- [x] Verificacao completa de todos os requisitos (Ver VERIFICACAO_COMPLETA.md)
 
 ## 5. Diferenciais (Não Obrigatórios)
 - [x] **Preocupação com performance**: Índices no BD, paginação no front/back, processamento incremental.

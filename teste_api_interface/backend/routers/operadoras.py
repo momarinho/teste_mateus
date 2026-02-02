@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import Optional, List
 import math
 
 from database import get_db
 from schemas.operadora import Operadora, PaginatedOperadoras
-from services import operadora_service
+from schemas.despesa import Despesa
+from services import operadora_service, despesa_service
 
 router = APIRouter(
     prefix="/api/operadoras",
@@ -23,9 +24,9 @@ def read_operadoras(
     Lista operadoras com paginacao e filtro opcional (Razao Social ou CNPJ).
     """
     operadoras_list, total_count = operadora_service.get_operadoras(db, page, limit, search)
-    
+
     total_pages = math.ceil(total_count / limit)
-    
+
     return {
         "data": operadoras_list,
         "total": total_count,
@@ -43,3 +44,11 @@ def read_operadora(cnpj: str, db: Session = Depends(get_db)):
     if not operadora:
         raise HTTPException(status_code=404, detail="Operadora not found")
     return operadora
+
+
+@router.get("/{cnpj}/despesas", response_model=List[Despesa])
+def read_operadora_despesas(cnpj: str, db: Session = Depends(get_db)):
+    """
+    Retorna o historico de despesas da operadora pelo CNPJ.
+    """
+    return despesa_service.get_expenses_by_operator(db, cnpj)

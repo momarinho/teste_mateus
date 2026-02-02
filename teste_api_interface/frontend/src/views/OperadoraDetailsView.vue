@@ -16,7 +16,7 @@ const cnpj = route.params.cnpj;
 const fetchExpenses = async () => {
     loadingHistory.value = true;
     try {
-        const res = await api.get(`/despesas/operadora/${cnpj}`);
+        const res = await api.get(`/operadoras/${cnpj}/despesas`);
         expensesHistory.value = res.data;
     } catch (e) {
         console.error("Failed to load expenses history", e);
@@ -78,7 +78,7 @@ const goBack = () => router.push('/');
                     <div class="info-item">
                         <label>Endereço</label>
                         <p>
-                            {{ store.currentOperadora.logradouro }}, {{ store.currentOperadora.numero }} 
+                            {{ store.currentOperadora.logradouro }}, {{ store.currentOperadora.numero }}
                             {{ store.currentOperadora.complemento }} <br/>
                             {{ store.currentOperadora.bairro }} - {{ store.currentOperadora.cidade }}/{{ store.currentOperadora.uf }}
                         </p>
@@ -88,11 +88,11 @@ const goBack = () => router.push('/');
 
             <section class="card expenses-card">
                 <h3>Histórico de Despesas</h3>
-                
+
                 <div v-if="loadingHistory" class="loader-container">
                     <div class="loader"></div>
                 </div>
-                
+
                 <table v-else-if="expensesHistory.length > 0">
                     <thead>
                         <tr>
@@ -109,7 +109,7 @@ const goBack = () => router.push('/');
                         </tr>
                     </tbody>
                 </table>
-                
+
                 <div v-else class="empty-state">
                     Sem registros de despesas.
                 </div>
