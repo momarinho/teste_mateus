@@ -7,12 +7,14 @@ Legenda: [x] feito | [ ] pendente
 - [x] 1.2 Processamento: extracao, normalizacao e filtro de sinistros
 - [x] 1.3 Consolidacao + inconsistencias + ZIP consolidado
 - [x] Documentacao (README Teste 1)
+- [x] Gerar artefatos locais (data/processed/consolidado_despesas.csv e consolidado_despesas.zip)
 
 ## 2. Teste de Transformacao e Validacao
 - [x] 2.1 Validacao (CNPJ, valor, razao social) + trade-off documentado
 - [x] 2.2 Enriquecimento (join CADOP) + tratamento de falhas documentado
 - [x] 2.3 Agregacao (total, media, desvio) + ordenacao + ZIP
 - [x] Documentacao (README Teste 2)
+- [ ] Gerar artefatos locais (despesas_agregadas.csv e Teste_{seu_nome}.zip)
 
 ## 3. Teste de Banco de Dados e Analise
 - [x] 3.1 Preparacao: CSVs gerados e listados
@@ -35,6 +37,9 @@ Legenda: [x] feito | [ ] pendente
 - [x] 4.3.4 Erros/loading/dados vazios documentados
 - [x] 4.4 Postman collection + exemplos (`teste_api_interface/postman_collection.json`)
 - [x] Documentacao geral no README
+- [ ] Ajustar rotas conforme enunciado: GET /api/estatisticas e GET /api/operadoras/{cnpj}/despesas
+- [ ] Atualizar Postman para refletir as rotas exigidas
+- [ ] Garantir compatibilidade do modo CSV (mapear colunas CNPJ/RazaoSocial/UF)
 
 ## Entrega
 - [ ] Gerar ZIP final: Teste_{seu_nome}.zip
